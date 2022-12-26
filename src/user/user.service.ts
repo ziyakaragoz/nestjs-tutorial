@@ -21,13 +21,20 @@ export class UserService {
     return user;
   }
 
+  // i first delete all the todos of the user and then delete the user. but certainly there is a better way to do this. going to look into it.
   async deleteUser(userId: number) {
+    console.log(userId);
+
+    await this.prisma.todo.deleteMany({
+      where: {
+        userId,
+      },
+    });
     const user = await this.prisma.user.delete({
       where: {
         id: userId,
       },
     });
-    console.log(user);
 
     return user;
   }

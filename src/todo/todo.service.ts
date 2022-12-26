@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
+import { CreateTodoDto, UpdateTodoDto } from './dto';
 
 @Injectable()
 export class TodoService {
@@ -24,5 +24,55 @@ export class TodoService {
     return { status: 1, todo };
   }
 
-  async deleteTodo() {}
+  async deleteTodo(userId: number, todoId: number) {
+    const todo = await this.prisma.todo.findUnique({
+      where: {
+        id: todoId,
+      },
+    });
+    if (!todo) {
+      throw new ForbiddenException('There is no todo with this id');
+    } else if (todo.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this todo',
+      );
+    }
+
+    const x = await this.prisma.todo.delete({
+      where: {
+        id: todoId,
+      },
+    });
+
+    console.log(todo);
+
+    delete todo.userId;
+    return { status: 1, todo };
+  }
+
+  async updateTodo(userId: number, todoId: number, body: UpdateTodoDto) {
+    const todo = await this.prisma.todo.findUnique({
+      where: {
+        id: todoId,
+      },
+    });
+    if (!todo) {
+      throw new ForbiddenException('There is no todo with this id');
+    } else if (todo.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to update this todo',
+      );
+    }
+
+    const updatedTodo = await this.prisma.todo.update({
+      where: {
+        id: todoId,
+      },
+      data: {
+        ...body,
+      },
+    });
+    console.log(updatedTodo);
+    return { status: 1, todo: updatedTodo };
+  }
 }

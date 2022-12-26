@@ -1,9 +1,11 @@
 import { TodoService } from './todo.service';
-import { Controller, UseGuards, Body } from '@nestjs/common';
-import { Get, Post } from '@nestjs/common/decorators';
+import { Controller, UseGuards, Body, ParseIntPipe } from '@nestjs/common';
+import { Get, Post, Put } from '@nestjs/common/decorators';
 import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
-import { CreateTodoDto } from './dto/create-todo.dto';
+import { CreateTodoDto, UpdateTodoDto } from './dto';
+import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
+import { Param } from '@nestjs/common/decorators/http/route-params.decorator';
 
 @UseGuards(JwtGuard)
 @Controller('todos')
@@ -19,8 +21,17 @@ export class TodoController {
     return this.todoService.createTodo(userId, body);
   }
 
-  @Post('delete')
-  deleteTodo(@GetUser('id') userId: number) {
-    return this.todoService.deleteTodo();
+  @Delete(':id')
+  deleteTodo(@GetUser('id') userId: number, @Param('id', ParseIntPipe) todoId) {
+    return this.todoService.deleteTodo(userId, todoId);
+  }
+
+  @Put(':id')
+  updateTodo(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) todoId: number,
+    @Body() body: UpdateTodoDto,
+  ) {
+    return this.todoService.updateTodo(userId, todoId, body);
   }
 }
