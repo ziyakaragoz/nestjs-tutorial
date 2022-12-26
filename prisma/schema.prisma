@@ -20,10 +20,25 @@ model User {
   firstName String?
   lastName  String?
 
-  bookmarks  Bookmark[]
-
+  todos     Todo[]
+  bookmarks Bookmark[]
 
   @@map("users")
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  isCompleted Boolean @default(false)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("todos")
 }
 
 model Bookmark {
@@ -34,7 +49,6 @@ model Bookmark {
   title       String
   description String?
   link        String
-
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
