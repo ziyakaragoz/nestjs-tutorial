@@ -1,4 +1,4 @@
-import { JwtStrategy } from './../../node_modules/@nestjs/passport/test/common/jwt.strategy';
+import { JwtStrategy } from './strategy';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
