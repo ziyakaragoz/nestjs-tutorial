@@ -11,6 +11,7 @@ export class TodoService {
         userId,
       },
     });
+
     return { status: 1, todos };
   }
 
@@ -21,6 +22,9 @@ export class TodoService {
         userId,
       },
     });
+
+    if (!todo) throw new ForbiddenException('Todo not created');
+
     return { status: 1, todo };
   }
 
