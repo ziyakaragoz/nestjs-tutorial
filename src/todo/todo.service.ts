@@ -38,16 +38,14 @@ export class TodoService {
       );
     }
 
-    const x = await this.prisma.todo.delete({
+    const deletedTodo = await this.prisma.todo.delete({
       where: {
         id: todoId,
       },
     });
 
-    console.log(todo);
-
-    delete todo.userId;
-    return { status: 1, todo };
+    delete deletedTodo.userId;
+    return { status: 1, todo: deletedTodo };
   }
 
   async updateTodo(userId: number, todoId: number, body: UpdateTodoDto) {
