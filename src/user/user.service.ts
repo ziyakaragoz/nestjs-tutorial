@@ -22,6 +22,7 @@ export class UserService {
   }
 
   // i first delete all the todos of the user and then delete the user. but certainly there is a better way to do this. going to look into it.
+  // deleted at!
   async deleteUser(userId: number) {
     console.log(userId);
 
